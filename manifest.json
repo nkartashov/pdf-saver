@@ -11,8 +11,12 @@
   },
   "permissions": [
     "tabs",
-    "https://ajax.googleapis.com/",
+    "identity",
+    "storage",
     "https://getpocket.com/*",
-    "identity"
+    "https://arxiv.org/pdf/*",
+    "https://arxiv.org/abs/*",
+    "webRequest", "webRequestBlocking",
+    "webNavigation"
   ]
 }
