@@ -28,6 +28,14 @@ function define(module) {
     return ARXIV_PDF_REGEX.test(url);
   }
 
+  module.makeArxivPdfUrlFromAbstract = function(abstractUrl) {
+    console.assert(module.isArxivAbstractUrl(abstractUrl, {
+      message: 'Url ' + abstractUrl + ' is not an arXiv abstract url'
+    }));
+    let pathParts = abstractUrl.split('/abs/');
+    return pathParts[0] + '/pdf/' + pathParts[1] + '.pdf';
+  }
+
   module.getPdfMetadata = function(url) {
     return PDFJS.getDocument(url).then(doc => doc.getMetadata());
   }
