@@ -11,82 +11,80 @@ function define(module) {
     redirect_uri: REDIRECT_URI 
   };
 
-  function getRequestToken(handler) {
+  function getRequestToken() {
     console.log('Request for a request token to ' + REQUEST_TOKEN_URL)
-    postJson(
+    return postJsonPromise(
       REQUEST_TOKEN_URL,
-      REQUEST_TOKEN_REQUEST_DATA,
-      handler
+      REQUEST_TOKEN_REQUEST_DATA
+    ).then(response =>
+      response.code
     )
   }
 
   const AUTH_REQUEST_URL = 'https://getpocket.com/auth/authorize?'
 
-  function finishAuth(requestToken, success, failure) {
+  function finishAuth(requestToken) {
     const authRequestParams = {
       request_token: requestToken,
       redirect_uri: REDIRECT_URI
     };
     console.log('Got a request token, run redirect')
-    chrome.identity.launchWebAuthFlow({
-        url: AUTH_REQUEST_URL + $.param(authRequestParams),
-        interactive: true
-      },
-      function() {
-        getAccessToken(requestToken, success, failure)
-      } 
+    return new Promise((resolve, reject) => {
+      chrome.identity.launchWebAuthFlow({
+          url: AUTH_REQUEST_URL + $.param(authRequestParams),
+          interactive: true
+        },
+        resolve
+      )
+    }).then(() => 
+      getAccessToken(requestToken)
     )
   }
 
   const ACCESS_TOKEN_URL = 'https://getpocket.com/v3/oauth/authorize'
 
-  function getAccessToken(code, success, failure) {
+  function getAccessToken(code) {
     const accessTokenRequestData = {
       consumer_key: CONSUMER_KEY,
       code: code
     }
     console.log('Returned from redirect, getting access token from OAuth')
-    postJson(
+    return postJsonPromise(
       ACCESS_TOKEN_URL,
-      accessTokenRequestData,
-      function(response) {
-        console.log('Successfully got access_token')
-        success(response.access_token)
-      },
-      failure
-    )
+      accessTokenRequestData
+    ).then(response => {
+        console.log('Successfully got access_token');
+        return response.access_token
+    })
   }
 
   function isUndefined(value) {
     return typeof(value) === 'undefined';
   }
 
-  function runFullAuth(success, failure) {
-      getRequestToken(function(response) {
-        finishAuth(response.code, success, failure)
-      })
+  function runFullAuth() {
+      return getRequestToken().then(finishAuth)
   }
 
-  module.runAuthAction = function(success, failure = function(){}) {
-    chrome.storage.local.get('authCtx', function(authCtx) {
-      if (isUndefined(authCtx)) {
-        console.log('No authCtx found')
-        runFullAuth(
-          function(accessToken) {
+  module.runAuthAction = function() {
+    return new Promise((resolve, reject) => {
+      chrome.storage.local.get('authCtx', authCtx => {
+        if (isUndefined(authCtx) || $.isEmptyObject(authCtx)) {
+          console.log('No authCtx found')
+          return runFullAuth().then(accessToken => {
             authCtx = {
               accessToken: accessToken,
               consumerKey: CONSUMER_KEY
             }
             console.log('Created authCtx, saving to local storage')
             chrome.storage.local.set({authCtx: authCtx})
-            success(authCtx)
-          },
-          failure
-        )
-      } else {
-        console.log('Run action using old authCtx')
-        success(authCtx)
-      }
+            resolve(authCtx)
+          })
+        } else {
+          console.log('Run action using old authCtx');
+          resolve(authCtx);
+        }
+      })
     })
   }
 };

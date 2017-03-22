@@ -10,4 +10,10 @@ const postJson = function(url, data, success, error=function(){}) {
     success: success,
     error: error
   })
-}
+};
+
+const postJsonPromise = function(url, data) {
+  return new Promise((resolve, reject) => {
+    postJson(url, data, resolve, reject)
+  })
+};

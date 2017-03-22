@@ -6,10 +6,24 @@
   "version": "1.0",
 
   "browser_action": {
-    "default_icon": "images/icon.png",
-    "default_popup": "html/popup.html"
+    "default_icon": "images/icon.png"
+  },
+  "background": {
+    "scripts": [
+      "js/libs/jquery.min.js",
+      "js/libs/pdfjs/build/pdf.js",
+      "js/libs/pdfjs/build/pdf.worker.js",
+
+      "js/util.js",
+      "js/pocket-auth.js",
+      "js/pocket-api.js",
+      "js/data.js",
+      "js/app.js",
+      "js/background.js"
+    ]
   },
   "permissions": [
+    "activeTab",
     "tabs",
     "identity",
     "storage",
@@ -17,6 +31,7 @@
     "https://arxiv.org/pdf/*",
     "https://arxiv.org/abs/*",
     "webRequest", "webRequestBlocking",
-    "webNavigation"
+    "webNavigation",
+    "<all_urls>"
   ]
 }
