@@ -1,11 +1,11 @@
 'use strict';
 
-app = {}
+var app = {};
 
 function define(module) {
-  app.addDocumentFromArxivPdfUrl = function(url) {
-    dataRetrieval.getDocumentInfo(url).then(pocketApi.addDocument)
+  module.addDocumentFromArxivPdfUrl = function(url) {
+    return dataRetrieval.getDocumentInfo(url).then(pocketApi.addDocument)
   }
 };
 
-define(app)
+define(app);

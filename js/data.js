@@ -33,7 +33,7 @@ function define(module) {
   }
 
   module.getDocumentInfo = function(url) {
-    return module.getMetadata(url).then(metadata => ({
+    return module.getPdfMetadata(url).then(metadata => ({
       url: url,
       author: metadata.info.Author,
       title: metadata.info.Title,

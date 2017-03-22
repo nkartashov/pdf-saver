@@ -82,7 +82,7 @@ function define(module) {
           })
         } else {
           console.log('Run action using old authCtx');
-          resolve(authCtx);
+          resolve(authCtx.authCtx);
         }
       })
     })
