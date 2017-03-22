@@ -13,7 +13,7 @@ const postJson = function(url, data, success, error=function(){}) {
 };
 
 const postJsonPromise = function(url, data) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => 
     postJson(url, data, resolve, reject)
-  })
+  )
 };
