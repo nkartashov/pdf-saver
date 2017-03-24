@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
 
-  "name": "Pocket arXiv",
-  "description": "Saves PDFs from arXiv to Pocket parsing title, author etc",
+  "name": "Pocket PDF",
+  "description": "Save PDFs, parse all metadata and save them to Pocket",
   "version": "1.0",
 
   "browser_action": {
