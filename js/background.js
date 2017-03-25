@@ -2,11 +2,11 @@
 
 chrome.browserAction.onClicked.addListener(tab => {
   let url = tab.url;
-  app.addDocumentFromArxiv(url).then(result => {
+  app.addPdfDocument(url).then(result => {
     if (result.added) {
       alert('Added current doc!')
     } else {
-      alert('This is not an arXiv doc!')
+      alert('Cannot add doc: ' + result.reason)
     }
   })
 })

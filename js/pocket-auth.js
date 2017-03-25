@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 var pocketAuth = {}
 
@@ -9,7 +9,7 @@ function define(module) {
   const REQUEST_TOKEN_REQUEST_DATA = {
     consumer_key: CONSUMER_KEY,
     redirect_uri: REDIRECT_URI 
-  };
+  }
 
   function getRequestToken() {
     console.log('Request for a request token to ' + REQUEST_TOKEN_URL)
@@ -23,22 +23,22 @@ function define(module) {
 
   const AUTH_REQUEST_URL = 'https://getpocket.com/auth/authorize?'
 
+  function launchAuthFlowPromise(args) {
+    return new Promise((resolve, reject) =>
+      chrome.identity.launchWebAuthFlow(args, resolve)
+    )
+  }
+
   function finishAuth(requestToken) {
     const authRequestParams = {
       request_token: requestToken,
       redirect_uri: REDIRECT_URI
-    };
+    }
     console.log('Got a request token, run redirect')
-    return new Promise((resolve, reject) => {
-      chrome.identity.launchWebAuthFlow({
-          url: AUTH_REQUEST_URL + $.param(authRequestParams),
-          interactive: true
-        },
-        resolve
-      )
-    }).then(() => 
-      getAccessToken(requestToken)
-    )
+    return launchAuthFlowPromise({
+      url: AUTH_REQUEST_URL + $.param(authRequestParams),
+      interactive: true
+    }).then(redirectUrl => getAccessToken(requestToken))
   }
 
   const ACCESS_TOKEN_URL = 'https://getpocket.com/v3/oauth/authorize'
@@ -48,44 +48,53 @@ function define(module) {
       consumer_key: CONSUMER_KEY,
       code: code
     }
-    console.log('Returned from redirect, getting access token from OAuth')
+    console.log('Redirected back, getting access token from OAuth')
     return postJsonPromise(
       ACCESS_TOKEN_URL,
       accessTokenRequestData
     ).then(response => {
-        console.log('Successfully got access_token');
+        console.log('Successfully got access_token')
         return response.access_token
+    }).catch(problem => {
+        console.log(problem)
+        throw problem
     })
   }
 
   function isUndefined(value) {
-    return typeof(value) === 'undefined';
+    return typeof(value) === 'undefined'
   }
 
   function runFullAuth() {
       return getRequestToken().then(finishAuth)
   }
 
-  module.runAuthAction = function() {
+  function getStoredAuthCtx() {
     return new Promise((resolve, reject) => {
-      chrome.storage.local.get('authCtx', authCtx => {
-        if (isUndefined(authCtx) || $.isEmptyObject(authCtx)) {
-          console.log('No authCtx found')
-          return runFullAuth().then(accessToken => {
-            authCtx = {
-              accessToken: accessToken,
-              consumerKey: CONSUMER_KEY
-            }
-            console.log('Created authCtx, saving to local storage')
-            chrome.storage.local.set({authCtx: authCtx})
-            resolve(authCtx)
-          })
-        } else {
-          console.log('Run action using old authCtx');
-          resolve(authCtx.authCtx);
-        }
-      })
+      chrome.storage.local.get('authCtx', resolve)
     })
   }
-};
-define(pocketAuth);
+
+  module.runAuthAction = function() {
+    return getStoredAuthCtx().then(authCtx => {
+      if (isUndefined(authCtx)
+        || $.isEmptyObject(authCtx)
+        || !authCtx.hasOwnProperty('accessToken')) {
+        console.log('No authCtx found')
+        return runFullAuth().then(accessToken => {
+          authCtx = {
+            accessToken: accessToken,
+            consumerKey: CONSUMER_KEY
+          }
+          console.log('Created authCtx, saving to local storage')
+          chrome.storage.local.set({authCtx: authCtx})
+          return authCtx
+        })
+      } else {
+        console.log('Run action using old authCtx')
+        return authCtx.authCtx
+      }
+    })
+  }
+}
+define(pocketAuth)

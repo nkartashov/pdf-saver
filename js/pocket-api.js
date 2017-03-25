@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 var pocketApi = {}
 
@@ -14,11 +14,11 @@ function define(module) {
         tags: documentData.tags,
         access_token: authCtx.accessToken,
         consumer_key: authCtx.consumerKey
-      };
+      }
       return postJsonPromise(
         POCKET_ADD_URL,
         addUrlData
-      );
+      )
     })
   }
 }

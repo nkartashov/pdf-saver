@@ -15,6 +15,7 @@
       "js/libs/pdfjs/build/pdf.worker.js",
 
       "js/util.js",
+      "js/pocket-errors.js",
       "js/pocket-auth.js",
       "js/pocket-api.js",
       "js/data.js",
