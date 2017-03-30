@@ -17,3 +17,14 @@ const postJsonPromise = function(url, data) {
     postJson(url, data, resolve, reject)
   )
 }
+
+const isUndefined = function(value) {
+  return typeof(value) === 'undefined'
+}
+
+const clipString = function(str, maxLength, stringEnd = '...') {
+  if (str.length > maxLength) {
+    return str.substr(0, maxLength - stringEnd.length) + stringEnd
+  }
+  return str
+}

@@ -1,12 +1,17 @@
-'use strict';
+'use strict'
 
-chrome.browserAction.onClicked.addListener(tab => {
-  let url = tab.url;
+chrome.runtime.onMessage.addListener((message, sender, sendResult) => {
+  console.log('Background received message: ' + JSON.stringify(message))
+  let url = message.url
   app.addPdfDocument(url).then(result => {
-    if (result.added) {
-      alert('Added current doc!')
-    } else {
-      alert('Cannot add doc: ' + result.reason)
+    let resultStatusMessage = result.added
+                                ? 'Added current doc!'
+                                : 'Cannot add doc: ' + result.reason
+    console.log('Result status: ' + resultStatusMessage)
+    return {
+      statusText: resultStatusMessage,
+      isLoading: false
     }
-  })
+  }).then(sendResult)
+  return true
 })

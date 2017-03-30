@@ -61,10 +61,6 @@ function define(module) {
     })
   }
 
-  function isUndefined(value) {
-    return typeof(value) === 'undefined'
-  }
-
   function runFullAuth() {
       return getRequestToken().then(finishAuth)
   }

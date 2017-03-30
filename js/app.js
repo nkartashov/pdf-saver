@@ -12,7 +12,7 @@ function define(module) {
     } else {
       return Promise.resolve({
         added: false,
-        reason: 'Url ' + url + ' is not a PDF url'
+        reason: 'Url ' + url + ' is not a PDF or arXiv url'
       })
     }
     return dataRetrieval.getDocumentInfo(url).then(pocketApi.addDocument).then(
