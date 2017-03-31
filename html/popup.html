@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link type="text/css" rel="stylesheet" href="../css/popup.css">
     <script type='text/javascript' src='../js/libs/jquery.min.js'></script>
     <script type='text/javascript' src='../js/libs/pdfjs/build/pdf.js'></script>
     <script type='text/javascript' src='../js/libs/pdfjs/build/pdf.worker.js'></script>
@@ -10,12 +11,14 @@
     <script type='text/javascript' src='../js/messaging.js'></script>
     <script type='text/javascript' src='../js/popup.js'></script>
   </head>
-  <body style="width: 300px">
-    <div id='status-text'>
-      Saving the page...
-    </div>
-    <div id='loading-pic'>
-      <img src='../images/loader.gif'/>
+  <body>
+    <div id='main-container'>
+      <div id='status-text'>
+        Saving the page...
+      </div>
+      <div id='loading-pic'>
+        <img src='../images/loader.gif'/>
+      </div>
     </div>
   </body>
 </html>
