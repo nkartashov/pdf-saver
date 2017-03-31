@@ -28,13 +28,11 @@
   },
 
   "permissions": [
-    "activeTab",
     "tabs",
     "identity",
     "storage",
     "https://getpocket.com/*",
     "https://arxiv.org/pdf/*",
-    "https://arxiv.org/abs/*",
-    "<all_urls>"
+    "https://arxiv.org/abs/*"
   ]
 }
