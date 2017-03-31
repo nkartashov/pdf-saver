@@ -1,7 +1,17 @@
-body {
-  width: 300px;
+#main-container {
+  min-width: 120px;
+  max-width: 300px;
 }
 
 .one-line {
   display: inline-block;
+  height: 100%;
+  vertical-align: center;
+}
+
+#loading-pic {
+  margin: 1px;
+}
+
+#status-text {
 }
