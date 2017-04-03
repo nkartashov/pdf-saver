@@ -1,6 +1,6 @@
 PDF saver
 =========
-![Logo image](https://github.com/nkartashov/raw/master/images/icon128.png "PDF saver")
+![Logo image](https://github.com/nkartashov/pdf-saver/raw/master/images/icon128.png "PDF saver")
 
 The simplest ever Chrome extension for saving PDFs to [Pocket](https://getpocket.com/) intended mostly for use with [arXiv](https://arxiv.org).
 
