@@ -4,18 +4,20 @@ var app = {}
 
 function define(module) {
   module.addPdfDocument = function(url) {
-    if (urls.isArxivAbstractUrl(url)) {
-      console.log('Url ' + url + ' is an arXiv abstract url')
-      url = urls.makeArxivPdfUrlFromAbstract(url)
+    let metadataPromise = undefined
+    if (urls.isArxivActionableUrl(url)) {
+      console.log('Url ' + url + ' is an arXiv url')
+      metadataPromise = dataRetrieval.getArxivPdfMetadata(url)
     } else if (urls.isPdfUrl(url)) {
       console.log('Url ' + url + ' is a pdf url')
+      metadataPromise = dataRetrieval.getDocumentInfo(url)
     } else {
       return Promise.resolve({
         added: false,
         reason: 'Url ' + url + ' is not a PDF or arXiv url'
       })
     }
-    return dataRetrieval.getDocumentInfo(url).then(pocketApi.addDocument).then(
+    return metadataPromise.then(pocketApi.addDocument).then(
       () => ({added: true})
     ).catch(error => {
       return {

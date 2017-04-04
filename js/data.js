@@ -31,9 +31,35 @@ function define(module) {
     }))
   }
 
+  module.getArxivPdfMetadata = function(arxivUrl) {
+    assert(urls.isArxivActionableUrl(arxivUrl), 'Url ' + arxivUrl + ' is not an arXiv url')
+    let abstractUrl = arxivUrl
+    let pdfUrl = arxivUrl
+    if (urls.isArxivPdfUrl(arxivUrl)) {
+      abstractUrl = urls.makeArxivAbstractUrlFromPdf(arxivUrl)
+    } else {
+      pdfUrl = urls.makeArxivPdfUrlFromAbstract(arxivUrl)
+    }
+    return Promise.all([
+      module.getDocumentInfoFromArxivAbstractPage(abstractUrl),
+      module.getDocumentInfo(pdfUrl)
+    ]).then(metadata => {
+      let abstractMetadata = metadata[1]
+      let pdfMetadata = metadata[0]
+      console.log('Abstract metadata: ' + JSON.stringify(abstractMetadata))
+      console.log('Pdf metadata: ' + JSON.stringify(pdfMetadata))
+      return leftBiasedMerge(pdfMetadata, abstractMetadata)
+    })
+  }
+
+  function hasNonEmptyProperty(object, property) {
+    return !object.hasOwnProperty(property)
+        || !object[property]
+  }
+
   function leftBiasedMerge(left, right) {
     for (var property in right) {
-      if (right.hasOwnProperty(property) && !left.hasOwnProperty(property)) {
+      if (right.hasOwnProperty(property) && !hasNonEmptyProperty(left, property)) {
         left[property] = right[property]
       }
     }

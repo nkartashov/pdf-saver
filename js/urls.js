@@ -34,7 +34,7 @@ function define(module) {
 
   module.makeArxivAbstractUrlFromPdf = function(pdfUrl) {
     assert(module.isArxivPdfUrl(pdfUrl), 'Url ' + pdfUrl + ' is not an arXiv PDF url')
-    let pathParts = abstractUrl.split('/pdf/')
+    let pathParts = pdfUrl.split('/pdf/')
     return pathParts[0] + '/abs/'
       + pathParts[1].substring(0, pathParts[1].length - PDF_EXTENSION.length)
   }
