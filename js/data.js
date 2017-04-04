@@ -17,31 +17,8 @@ function define(module) {
     })
   }
 
-  const ARXIV_ABSTRACT_REGEX = new RegExp('^(https|http):\/\/arxiv\.org\/abs\/\\d+.*')
-  const ARXIV_PDF_REGEX = new RegExp('^(https|http):\/\/arxiv\.org\/pdf\/\\d+.*\.pdf$')
-  const PDF_REGEX = new RegExp('^(https|http):\/\/.*\.pdf$')
-
-  module.isArxivAbstractUrl = function(url) {
-    return ARXIV_ABSTRACT_REGEX.test(url)
-  }
-
-  module.isArxivPdfUrl = function(url) {
-    return ARXIV_PDF_REGEX.test(url)
-  }
-
-  module.isPdfUrl = function(url) {
-    return PDF_REGEX.test(url)
-  }
-
-  module.makeArxivPdfUrlFromAbstract = function(abstractUrl) {
-    console.assert(module.isArxivAbstractUrl(abstractUrl), {
-      message: 'Url ' + abstractUrl + ' is not an arXiv abstract url'
-    })
-    let pathParts = abstractUrl.split('/abs/')
-    return pathParts[0] + '/pdf/' + pathParts[1] + '.pdf'
-  }
-
   module.getPdfMetadata = function(url) {
+    assert(urls.isPdfUrl(url), 'Url ' + url + ' is not an PDF url')
     return PDFJS.getDocument(url).then(doc => doc.getMetadata())
   }
 
@@ -52,6 +29,47 @@ function define(module) {
       title: metadata.info.Title,
       tags: metadata.info.Keywords.split(', ').join(',')
     }))
+  }
+
+  function leftBiasedMerge(left, right) {
+    for (var property in right) {
+      if (right.hasOwnProperty(property) && !left.hasOwnProperty(property)) {
+        left[property] = right[property]
+      }
+    }
+    return left
+  }
+
+  const ARXIV_TITLE_CLASS_SELECTOR = '.title'
+  const ARXIV_AUTHOR_CLASS_SELECTOR = '.authors > a'
+
+  function getTitleFromArxivHtml(html) {
+    return $(html).find(ARXIV_TITLE_CLASS_SELECTOR)[0]
+      // First element is <span>
+      .childNodes[1].textContent
+      // First symbol is \n
+      .substr(1)
+  }
+
+  function getAuthorFromArxivHtml(html) {
+    return $(html).find(ARXIV_AUTHOR_CLASS_SELECTOR)
+      // Get text from author hyperlinks
+      .map((index, element) => $(element).text()).get()
+      // Join all authors into one string
+      .join(', ')
+  }
+
+  module.getDocumentInfoFromArxivAbstractPage = function(abstractUrl) {
+    assert(urls.isArxivAbstractUrl(abstractUrl), 'Url ' + abstractUrl + ' is not an arXiv abstract url')
+    return fetch(abstractUrl).then(response => response.text()).then(htmlText => {
+      let html = $.parseHTML(htmlText)
+      return {
+        url: urls.makeArxivPdfUrlFromAbstract(abstractUrl),
+        author: getAuthorFromArxivHtml(html),
+        title: getTitleFromArxivHtml(html)
+        // No tags, sadly
+      }
+    })
   }
 }
 

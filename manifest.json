@@ -21,8 +21,9 @@
       "js/libs/jquery.min.js",
       "js/libs/pdfjs/build/pdf.js",
       "js/libs/pdfjs/build/pdf.worker.js",
-      
+
       "js/util.js",
+      "js/urls.js",
       "js/pocket-errors.js",
       "js/pocket-auth.js",
       "js/pocket-api.js",

@@ -12,6 +12,12 @@ const postJson = function(url, data, success, error) {
   })
 }
 
+const assert = function(value, errorMessage) {
+    console.assert(value, {
+      message: errorMessage
+    })
+}
+
 const postJsonPromise = function(url, data) {
   return new Promise((resolve, reject) => 
     postJson(url, data, resolve, reject)

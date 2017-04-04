@@ -4,10 +4,10 @@ var app = {}
 
 function define(module) {
   module.addPdfDocument = function(url) {
-    if (dataRetrieval.isArxivAbstractUrl(url)) {
+    if (urls.isArxivAbstractUrl(url)) {
       console.log('Url ' + url + ' is an arXiv abstract url')
-      url = dataRetrieval.makeArxivPdfUrlFromAbstract(url)
-    } else if (dataRetrieval.isPdfUrl(url)) {
+      url = urls.makeArxivPdfUrlFromAbstract(url)
+    } else if (urls.isPdfUrl(url)) {
       console.log('Url ' + url + ' is a pdf url')
     } else {
       return Promise.resolve({

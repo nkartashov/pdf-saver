@@ -8,7 +8,7 @@ function define(module) {
   const REDIRECT_URI = chrome.identity.getRedirectURL()
   const REQUEST_TOKEN_REQUEST_DATA = {
     consumer_key: CONSUMER_KEY,
-    redirect_uri: REDIRECT_URI 
+    redirect_uri: REDIRECT_URI
   }
 
   function getRequestToken() {
