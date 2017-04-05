@@ -13,5 +13,7 @@ Install the PDF saver extension from [Chrome Store](https://chrome.google.com/we
 will look like this
 ![With PDF saver](https://github.com/nkartashov/pdf-saver/raw/master/images/screenshots/with_pdf_saver.png "GANs, I know GANs!")  
 
+By the way, PDF saver will even use the keywords from PDF metadata as tags, so you can manage your library more easily!
+![Keywords as tags](https://github.com/nkartashov/pdf-saver/raw/master/images/screenshots/mobile_with_tags.jpg "Neat!")  
 
 Icons by [bc999](https://www.behance.net/bc999).
