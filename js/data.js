@@ -22,7 +22,7 @@ function define(module) {
     return PDFJS.getDocument(url).then(doc => doc.getMetadata())
   }
 
-  module.getDocumentInfo = function(url) {
+  module.getDocumentInfoFromPdf = function(url) {
     return module.getPdfMetadata(url).then(metadata => ({
       url: url,
       author: metadata.info.Author,
@@ -41,20 +41,20 @@ function define(module) {
       pdfUrl = urls.makeArxivPdfUrlFromAbstract(arxivUrl)
     }
     return Promise.all([
-      module.getDocumentInfoFromArxivAbstractPage(abstractUrl),
-      module.getDocumentInfo(pdfUrl)
+      module.getDocumentInfoFromPdf(pdfUrl),
+      module.getDocumentInfoFromArxivAbstractPage(abstractUrl)
     ]).then(metadata => {
-      let abstractMetadata = metadata[1]
       let pdfMetadata = metadata[0]
-      console.log('Abstract metadata: ' + JSON.stringify(abstractMetadata))
+      let abstractMetadata = metadata[1]
       console.log('Pdf metadata: ' + JSON.stringify(pdfMetadata))
+      console.log('Abstract metadata: ' + JSON.stringify(abstractMetadata))
       return leftBiasedMerge(pdfMetadata, abstractMetadata)
     })
   }
 
   function hasNonEmptyProperty(object, property) {
-    return !object.hasOwnProperty(property)
-        || !object[property]
+    return object.hasOwnProperty(property)
+        && object[property]
   }
 
   function leftBiasedMerge(left, right) {
